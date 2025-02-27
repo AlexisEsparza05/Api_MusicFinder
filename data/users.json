@@ -1,0 +1,39 @@
+{
+  "usuarios": [
+    {
+      "id": "2a21b8a7-b49b-492b-a62f-abc4203e1748",
+      "nombre": "laila",
+      "correo": "laila@gmail.com",
+      "contraseña": "laila",
+      "rol": "Profesor"
+    },
+    {
+      "id": "b40bd4ce-4570-4aac-bc60-4ea3dd127de3",
+      "nombre": "samuel chim",
+      "correo": "samuchim10@gmail.com",
+      "contraseña": "samuel",
+      "rol": "Profesor"
+    },
+    {
+      "id": "6e5d4226-4dc0-45e5-a665-edc6f7b89038",
+      "nombre": "alex",
+      "correo": "alex@daouse.com",
+      "contraseña": "alex",
+      "rol": "Profesor"
+    },
+    {
+      "id": "9f319996-47ac-459d-95da-f7be74b2b139",
+      "nombre": "pepe",
+      "correo": "pepe@gmail.com",
+      "contraseña": "pepe",
+      "rol": "Profesor"
+    },
+    {
+      "id": "54e264f5-ef5b-41eb-a4d3-0fae0a56901e",
+      "nombre": "sam",
+      "correo": "sam@gmail.com",
+      "contraseña": "sam",
+      "rol": "Estudiante"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "perfiles": [
+    {
+      "id": "2a21b8a7-b49b-492b-a62f-abc4203e1748",
+      "correo": "laila@gmail.com",
+      "nombre": "laila",
+      "instrumento": "saxofon",
+      "precio": "280/hora",
+      "ubicacion": "Merida, Yucatan",
+      "rating": 5,
+      "imagen": "assets/violin_teacher.jpg",
+      "descripcion": "Soy una maestra apasionada por la musica y la enseñanza, tengo 10 años de experinecia en la rama de la educacion e viajado por el mundo enseñando a diferentes perosonas de diferentes edades a encontra su musico interior y a explotar su maximo potencial reserva conmigo y te aseguro que en tu primer clase te llevaras una experiencia gratifcante y motivacional para continuar en el mundo de la musica",
+      "rol": "Profesor"
+    },
+    {
+      "id": "6e5d4226-4dc0-45e5-a665-edc6f7b89038",
+      "correo": "alex@daouse.com",
+      "nombre": "Alex",
+      "instrumento": "Clases de Violín",
+      "precio": "$300/hora",
+      "ubicacion": "Merida",
+      "rating": 5,
+      "imagen": "assets/violin_teacher.jpg",
+      "descripcion": "Soy una profesora apasionada por la música y el violín...",
+      "rol": "Profesor"
+    },
+    {
+      "id": "9f319996-47ac-459d-95da-f7be74b2b139",
+      "correo": "pepe@gmail.com",
+      "nombre": "pepe",
+      "instrumento": "Oboe",
+      "precio": "$300/hora",
+      "ubicacion": "Opichen, Merida",
+      "rating": 0,
+      "imagen": "",
+      "descripcion": "Soy maestro recien egresado con ganas de enseñar y de paso aprender de mis estudiantes ya que en la musica no se deja de aprender nunca, reserva una calse conmigo y tendras la mejor experiencia musical de tu vida!!!!!",
+      "rol": "Profesor"
+    },
+    {
+      "id": "54e264f5-ef5b-41eb-a4d3-0fae0a56901e",
+      "correo": "sam@gmail.com",
+      "nombre": "sam",
+      "instrumento": "Instrumento no especificado",
+      "precio": "$0/hora",
+      "ubicacion": "Ubicación no especificada",
+      "rating": 0,
+      "imagen": "assets/violin_teacher.jpg",
+      "descripcion": "Descripción no disponible",
+      "rol": "Estudiante"
+    }
+  ]
+}
