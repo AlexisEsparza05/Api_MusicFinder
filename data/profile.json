@@ -47,6 +47,18 @@
       "imagen": "assets/violin_teacher.jpg",
       "descripcion": "Descripción no disponible",
       "rol": "Estudiante"
+    },
+    {
+      "id": "443003b1-2aac-4013-8cba-504110118d28",
+      "correo": "juanperez@email.com",
+      "nombre": "Juan Pérez",
+      "instrumento": "Instrumento no especificado",
+      "precio": "$0/hora",
+      "ubicacion": "Ubicación no especificada",
+      "rating": 0,
+      "imagen": "assets/default_profile.jpg",
+      "descripcion": "Descripción no disponible",
+      "rol": "Profesor"
     }
   ]
 }

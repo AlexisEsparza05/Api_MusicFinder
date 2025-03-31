@@ -1,72 +1,105 @@
-const reservas = []; // Aquí se guardarán las reservas temporalmente (usualmente usarías una base de datos)
+const fs = require("fs");
+const path = require("path");
 
-const getReservas = (req, res) => {
-  const { fecha } = req.params;
+const reservasPath = path.join(__dirname, "../data/reservas.json");
 
-  // Filtramos las reservas por fecha
-  const reservasFiltradas = reservas.filter(reserva => reserva.fecha === fecha);
-
-  if (reservasFiltradas.length > 0) {
-    return res.status(200).json(reservasFiltradas);
-  } else {
-    return res.status(404).json({ message: 'No se encontraron reservas para esta fecha.' });
-  }
+// Función para leer las reservas desde el archivo
+const leerReservas = () => {
+    if (!fs.existsSync(reservasPath)) {
+        return {};
+    }
+    const data = fs.readFileSync(reservasPath, "utf8");
+    return JSON.parse(data);
 };
 
+// Función para guardar reservas en el archivo
+const guardarReservas = (reservas) => {
+    fs.writeFileSync(reservasPath, JSON.stringify(reservas, null, 2), "utf8");
+};
+
+// Función para verificar si dos horarios se solapan
+const horariosSeSolapan = (nuevoHorario, horariosExistentes) => {
+    const [nuevaInicio, nuevaFin] = nuevoHorario.split(" - ").map(hora => convertirAHoras(hora));
+
+    return horariosExistentes.some(reserva => {
+        const [inicio, fin] = reserva.horario.split(" - ").map(hora => convertirAHoras(hora));
+        return !(nuevaFin <= inicio || nuevaInicio >= fin); // Si no hay separación, hay choque
+    });
+};
+
+// Función para convertir formato "10:00 AM" a número (ejemplo: 10.00, 13.30)
+const convertirAHoras = (hora) => {
+    let [tiempo, periodo] = hora.split(" ");
+    let [horas, minutos] = tiempo.split(":").map(Number);
+
+    if (periodo === "PM" && horas !== 12) horas += 12;
+    if (periodo === "AM" && horas === 12) horas = 0;
+
+    return horas + minutos / 60;
+};
+
+// PUT: Crear una nueva reserva con horario de rango
 const crearReserva = (req, res) => {
-  const { fecha } = req.params;
-  const { hora, profesor, alumno, clase } = req.body; // Datos que se esperan en el cuerpo de la solicitud
+    const { profesorID, precio, fecha, ubicacion, descripcion, horario } = req.body;
 
-  // Verifica que los datos sean correctos
-  if (!hora || !profesor || !alumno || !clase) {
-    return res.status(400).json({ message: 'Faltan datos para crear la reserva.' });
-  }
+    if (!profesorID || !precio || !fecha || !ubicacion || !descripcion || !horario) {
+        return res.status(400).json({ error: "Todos los campos son obligatorios" });
+    }
 
-  // Crear una nueva reserva
-  const nuevaReserva = { fecha, hora, profesor, alumno, clase };
+    const reservas = leerReservas();
 
-  // Agregar la nueva reserva a la lista
-  reservas.push(nuevaReserva);
+    // Si la fecha no existe, la creamos
+    if (!reservas[fecha]) {
+        reservas[fecha] = [];
+    }
 
-  return res.status(201).json({ message: 'Reserva creada correctamente', reserva: nuevaReserva });
+    // Verificar si hay choque de horarios con el mismo profesor
+    const conflicto = horariosSeSolapan(horario, reservas[fecha].filter(r => r.profesorID === profesorID));
+
+    if (conflicto) {
+        return res.status(400).json({ error: "El horario ya está ocupado para este profesor en esta fecha" });
+    }
+
+    // Crear nueva reserva
+    const nuevaReserva = {
+        profesorID,
+        precio,
+        ubicacion,
+        descripcion,
+        horario
+    };
+
+    reservas[fecha].push(nuevaReserva);
+    guardarReservas(reservas);
+
+    res.status(201).json({ mensaje: "Reserva creada con éxito", reserva: nuevaReserva });
 };
 
-const actualizarReserva = (req, res) => {
-  const { fecha, hora } = req.params;
-  const { profesor, alumno, clase } = req.body;
+// GET: Obtener reservas (todas, por fecha o por profesorID)
+const obtenerReservas = (req, res) => {
+    const { profesorID, fecha } = req.query;
+    const reservas = leerReservas();
 
-  // Buscar la reserva existente
-  const reservaIndex = reservas.findIndex(r => r.fecha === fecha && r.hora === hora);
+    if (!profesorID && !fecha) {
+        return res.json(reservas);
+    }
 
-  if (reservaIndex === -1) {
-    return res.status(404).json({ message: 'Reserva no encontrada.' });
-  }
+    let resultados = {};
 
-  // Actualizar la reserva
-  reservas[reservaIndex] = { fecha, hora, profesor, alumno, clase };
+    if (fecha && reservas[fecha]) {
+        resultados[fecha] = reservas[fecha];
+    }
 
-  return res.status(200).json({ message: 'Reserva actualizada correctamente', reserva: reservas[reservaIndex] });
+    if (profesorID) {
+        Object.keys(reservas).forEach(f => {
+            reservas[f] = reservas[f].filter(reserva => reserva.profesorID === profesorID);
+            if (reservas[f].length > 0) {
+                resultados[f] = reservas[f];
+            }
+        });
+    }
+
+    res.json(resultados);
 };
 
-const eliminarReserva = (req, res) => {
-  const { fecha, hora } = req.params;
-
-  // Buscar la reserva para eliminarla
-  const reservaIndex = reservas.findIndex(r => r.fecha === fecha && r.hora === hora);
-
-  if (reservaIndex === -1) {
-    return res.status(404).json({ message: 'Reserva no encontrada.' });
-  }
-
-  // Eliminar la reserva
-  reservas.splice(reservaIndex, 1);
-
-  return res.status(200).json({ message: 'Reserva eliminada correctamente' });
-};
-
-module.exports = {
-  getReservas,
-  crearReserva,
-  actualizarReserva,
-  eliminarReserva
-};
+module.exports = { crearReserva, obtenerReservas };

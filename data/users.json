@@ -34,6 +34,13 @@
       "correo": "sam@gmail.com",
       "contraseña": "sam",
       "rol": "Estudiante"
+    },
+    {
+      "id": "443003b1-2aac-4013-8cba-504110118d28",
+      "nombre": "Juan Pérez",
+      "correo": "juanperez@email.com",
+      "contraseña": "123456",
+      "rol": "Profesor"
     }
   ]
 }

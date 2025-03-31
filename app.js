@@ -1,33 +1,42 @@
+require("dotenv").config(); // Cargar variables de entorno
 const express = require("express");
+const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
 // Importación de controladores
+const reservasController = require("./controllers/reservasController");
 const HomeAlumnoController = require("./controllers/HomeAlumnoController");
 const userController = require("./controllers/userController");
 const profileController = require("./controllers/profileController");
 const loginController = require("./controllers/loginController");
 const registerController = require("./controllers/registerController");
 const passwordController = require("./controllers/passwordController");
-const reservasController = require("./controllers/reservasController"); // Controlador de reservas
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware para procesar las solicitudes JSON
+// Conectar a MongoDB
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("✅ Conectado a MongoDB Atlas"))
+.catch(err => console.error("❌ Error al conectar a MongoDB:", err));
+
+// Middleware
 app.use(bodyParser.json());
 app.use(cors({
-  origin: "*", // Permite cualquier origen
+  origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type"]
 }));
-
 
 // Rutas para login
 app.post("/login", loginController.login);
 app.post("/register", registerController.register);
 
-// Rutas para Cambiar Contraseña
+// Rutas para cambiar contraseña
 app.post("/enviar-codigo", passwordController.enviarCodigo);
 app.post("/cambiar-password", passwordController.cambiarPassword);
 
@@ -35,19 +44,16 @@ app.post("/cambiar-password", passwordController.cambiarPassword);
 app.post("/getUser", userController);
 
 // Integración del controlador de perfil
-app.use('/api/profiles', profileController); // Todas las rutas del controlador serán prefijadas con '/api/profiles'
+app.use('/api/profiles', profileController);
 
 // Rutas de reservas
-app.get("/professors", HomeAlumnoController.getProfessors);
-app.get("/reservas/:fecha", reservasController.getReservas); // Obtener las reservas de una fecha
-app.post("/reservas/:fecha", reservasController.crearReserva); // Crear una nueva reserva
-app.put("/reservas/:fecha/:hora", reservasController.actualizarReserva); // Actualizar una reserva
-app.delete("/reservas/:fecha/:hora", reservasController.eliminarReserva); // Eliminar una reserva
+app.put("/reservas", reservasController.crearReserva);
+app.get("/reservas", reservasController.obtenerReservas);
+
+// Agregar la ruta para HomeAlumnoController
+app.use('/api/homealumno', HomeAlumnoController); 
 
 // Iniciar el servidor
-app.listen(PORT, "0.0.0.0",  () => {
-  console.log(`Servidor corriendo en http://192.168.137.52:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 });
-
-console.log(reservasController); // Verifica si el controlador de reservas está importado correctamente
-  
