@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const router = express.Router();
 
 // Importa el modelo de Profile que has definido
@@ -8,8 +9,14 @@ const Profile = require("../models/profile");
 router.post("/getUser", async (req, res) => {
   const { id } = req.body;
 
+  // Verifica si el ID está presente
   if (!id) {
     return res.status(400).json({ error: "El ID del usuario es requerido" });
+  }
+
+  // Verifica si el ID es un ObjectId válido
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "ID inválido" });
   }
 
   try {

@@ -23,15 +23,18 @@ exports.register = async (req, res) => {
       rol,
     });
 
+    // Guardar el usuario
     await newUser.save();
 
-    // Crear perfil para el usuario
+    // Crear perfil para el usuario con el mismo ID
     const newProfile = new Profile({
+      _id: newUser._id,  // Asignar el _id del usuario al perfil
       correo,
       nombre,
       rol,
     });
 
+    // Guardar el perfil
     await newProfile.save();
 
     res.status(201).json({ mensaje: "Usuario y perfil registrados exitosamente" });
